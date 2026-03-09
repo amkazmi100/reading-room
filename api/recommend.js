@@ -1,9 +1,20 @@
+export const config = {
+  api: {
+    bodyParser: true,
+  },
+};
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { prompt } = req.body;
+  let body = req.body;
+  if (typeof body === "string") {
+    try { body = JSON.parse(body); } catch (e) {}
+  }
+
+  const prompt = body?.prompt;
 
   if (!prompt) {
     return res.status(400).json({ error: "No prompt provided" });
